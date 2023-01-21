@@ -1,0 +1,257 @@
+<html>
+<head>
+  <style>
+    body {
+    background-color: #f2f2f2;
+    }
+    h1 {
+        padding: 20px;
+      text-align: center;
+    }
+#results-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+#results-table th {
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  padding: 10px;
+}
+#pendulo {
+  padding: 20px;
+  align-content: center;
+  width: 800px;
+  height: 500px;
+  background-color: black;
+}
+//animação de pendulo
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.base {
+  width: 500px;
+  border-top: 5px solid gray;
+  margin: auto;
+  text-align: center;
+  position: relative;
+  padding: 0 0 30px;
+}
+
+.holder {
+  width: 30px;
+  height: 20px;
+  background: black;
+  margin: auto;
+  border-radius: 0 0 50% 50%;
+}
+
+.thread {
+  display: inline-block;
+  width: 2px;
+  height: 200px;
+  background: black;
+  border-radius: 5px;
+  position: relative;
+  transform-origin: 50% 0;
+  animation: moveIt 2.5s ease-in-out infinite;
+}
+
+.thread:after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: red;
+  border: 2px solid white;
+  top: -4.5px;
+  left: -3.5px;
+}
+
+.knob {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: -18px;
+  left: -4.5px;
+  border: 2px solid rgba(255, 255, 255, .5);
+  border-radius: 50%;
+  border-bottom: 2px solid transparent;
+}
+
+.pendulum {
+  width: 20px;
+  height: 20px;
+  background: -moz-radial-gradient(circle at 70% 35%, white, #66d63e 30%, #40a31d 50%);
+  background: -webkit-radial-gradient(circle at 70% 35%, white, #66d63e 30%, #40a31d 50%);
+  background: -o-radial-gradient(circle at 70% 35%, white, #66d63e 30%, #40a31d 50%);
+  background: -ms-radial-gradient(circle at 70% 35%, white, #66d63e 30%, #40a31d 50%);
+  background: radial-gradient(circle at 70% 35%, white, #66d63e 30%, #40a31d 50%);
+  border-radius: 50%;
+  position: absolute;
+  bottom: -10px;
+  left: -9px;
+}
+
+.shadow {
+  width: 30px;
+  height: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  margin: 50px auto 0;
+  animation: moveShade 1.25s ease-in-out alternate infinite;
+}
+
+@keyframes moveIt {
+  0%, 100% {
+    transform: rotate(45deg);
+  }
+  50% {
+    transform: rotate(-45deg);
+  }
+}
+
+@keyframes moveShade {
+  0% {
+    transform: translateX(-220px) scale(1.4, .5);
+    filter: blur(20px);
+  }
+  50% {
+    filter: blur(3px);
+  }
+  100% {
+    transform: translateX(220px) scale(1.4, .5);
+    filter: blur(20px);
+  }
+}
+ </style>
+
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>Pêndulo Grávitico</title>
+<link href="style.css" type="text/css" rel="stylesheet"/>
+
+    <script type="text/javascript">
+</script>
+  <!-- Carrega a biblioteca Plotly -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+    
+<body>
+<header>
+<img 
+    src="https://ivo.com.pt/wp-content/uploads/2020/05/ivoprincipal.png" 
+    alt="Ivo Baptista">
+<div>
+    <strong>Ivo Baptista</strong>
+    <span>EfolioB de Física</span>
+</div>
+</header>
+<div class="base">
+  <div class="holder"></div>
+  <div class="thread">
+    <div class="knob"></div>
+    <div class="pendulum"></div>
+  </div>
+  <div class="shadow"></div>
+</div>
+  <!-- Cria uma div onde é exibido o gráfico -->
+  <div id="Pendulo"></div>
+
+
+    <h1>Grafico Pêndulo Gravítico</h1>
+
+  <script>
+
+// Constantes
+const m = 2.6 * 0.001;  // Massa em kg
+const L = 1.0;     // Length of rope in meters
+const rho = 1.28;  // Massa específica do ar em kg/m^3
+const g = 9.81;    // Aceleração da gravidade em m/s^2
+const cd = 0.1;    // Coeficiente de arrasto aerodinâmico para uma esfera
+const R = 0.3;     // Raio da esfera em metros
+
+// Área frontal do pêndulo
+const A = Math.PI * R**2;
+
+// Calcula o coeficiente de arrasto aerodinâmico
+const b =  1/2 * rho * cd * A;
+
+// Valores iniciais
+let theta0 = 0.05;  // Ângulo inicial em rad
+let w0 = 0.0;       // Velocidade angular inicial em rad/s
+let t0 = 0.0;       // Tempo inicial em segundos
+const h = 0.1;      // Passo de tempo em segundos
+
+// Listas para armazenar os resultados
+const t = [t0];
+const theta = [theta0];
+const w = [w0];
+
+// Loop de tempo
+while (t[t.length - 1] < 100.0) {
+    // Cálculo dos valores intermediários
+  let k1x = w[w.length-1];
+    let k1v = (-Math.sign(w[w.length-1])*(b*L/m) *(w[w.length-1])**2)-(g/L)*theta[theta.length-1];  
+    let k2x = w[w.length-1] + k1v*h;
+    let k2v = (-Math.sign((w[w.length-1] + k1v*h))*(b*L/m)*((w[w.length-1] + k1v)*h)**2 - (g/L) * ((theta[theta.length-1]+k1x*h)));
+
+    // Atualização dos valores de θ e w
+    theta.push(theta[theta.length-1] + ((k1x + k2x) / 2.0)*h);  // Metodo Heun 
+    w.push(w[w.length-1] + ((k1v + k2v) / 2.0)*h);    // Metodo Heun
+
+    // Atualização do tempo
+    t.push(t[t.length - 1] + h);
+
+}
+
+
+// Cria o gráfico com linha vermelha para θ
+const trace1 = {
+    x: t,
+    y: theta,
+    type: 'scatter',
+    name: 'θ',
+    marker: {color: 'red'},
+};
+
+// Cria grafico com linhaa azul para w 
+const trace2 = {
+    x: t,
+    y: w,
+    type: 'scatter',
+    name: 'w',
+    marker: {color: 'blue'},
+};
+
+// Adiciona os dados ao layout
+const data = [trace1, trace2];
+
+// Adiciona títulos aos eixos
+const layout = {
+    xaxis: {
+        title: 't (s)',
+    },
+    yaxis: {
+        title: 'θ (rad), w (rad/s)',
+    },
+};
+
+// Exibe o gráfico
+Plotly.newPlot('Pendulo', data, layout);
+
+ </script>
+
+    <script type="text/javascript">	implementa();</script>							<!-- Implementação automatica dos valores por defeito -->			
+
+    <p style="font-size:x-small">
+     ** Realizado por: Ivo Vieira Baptista - @UAb  **</p>
+</body>
+</html>
+
+
+
