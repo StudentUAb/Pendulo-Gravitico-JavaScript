@@ -1,6 +1,6 @@
 
 <h1 align="center">
-    <img width="600" src="assets/js.gif" />
+    <img width="600" src="assets/js.png" />
 </h1>
 
 
@@ -14,7 +14,7 @@ A Ideia surgiu com o objetivo colocar os links das minhas redes sociais numa pag
 
 
 
-<img src="assets/pendulo.jpg" >
+<img src="assets/pendulo.png" >
 
 
 🔧 Tecnologias utilizadas:
