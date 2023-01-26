@@ -24,7 +24,7 @@ Pela análise do gráfico obtido verifica-se que ocorre um amortecimento gradual
 <img src="pendulo.png" >
 
 
-Ver demo aqui:  https://ivo.com.pt/pendulo/
+Ver demo aqui:  https://ivo.com.pt/pendulo/<br>
 🔧 Tecnologias utilizadas:
 ------------------
 
